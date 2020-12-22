@@ -40,19 +40,13 @@ from feature_matcher import feature_matcher_factory, FeatureMatcherTypes
 from feature_tracker_configs import FeatureTrackerConfigs
 
 
-
-"""
-use or not pangolin (if you want to use it then you need to install it by using the script install_thirdparty.sh)
-"""
-kUsePangolin = True
-
-if kUsePangolin:
-    from viewer3D import Viewer3D
-
-
 if __name__ == "__main__":
 
     config = Config()
+
+    # ---------- Determine the using of CUI ------------
+    if config.dataset_settings['gui_on'] is True:
+        from viewer3D import Viewer3D
 
     # ---------- Auto load of Camera matrix ---------- 
     seq_num = config.dataset_settings['name']
@@ -108,23 +102,35 @@ if __name__ == "__main__":
     # create visual odometry object 
     vo = VisualOdometry(cam, groundtruth, feature_tracker)
 
-    is_draw_traj_img = True
+    # ---------- Determine the using of CUI ------------
+    if config.dataset_settings['gui_on'] is True:
+        is_draw_traj_img = True
+    else:
+        is_draw_traj_img = False
     traj_img_size = 800
     traj_img = np.zeros((traj_img_size, traj_img_size, 3), dtype=np.uint8)
     half_traj_img_size = int(0.5*traj_img_size)
     draw_scale = 1
 
-    is_draw_3d = True
-    if kUsePangolin:
-        viewer3D = Viewer3D()
+    # ---------- Determine the using of CUI ------------
+    if config.dataset_settings['gui_on'] is True:
+        is_draw_3d = True
+        kUsePangolin = True
+        if kUsePangolin:
+            viewer3D = Viewer3D()
+        else:
+            plt3d = Mplot3d(title='3D trajectory')
+
+        is_draw_err = True 
+        err_plt = Mplot2d(xlabel='img id', ylabel='m',title='error')
+
+        is_draw_matched_points = True 
+        matched_points_plt = Mplot2d(xlabel='img id', ylabel='# matches',title='# matches')
     else:
-        plt3d = Mplot3d(title='3D trajectory')
-
-    is_draw_err = True 
-    err_plt = Mplot2d(xlabel='img id', ylabel='m',title='error')
-
-    is_draw_matched_points = True 
-    matched_points_plt = Mplot2d(xlabel='img id', ylabel='# matches',title='# matches')
+        is_draw_3d = False
+        is_draw_err = False
+        is_draw_3d = False
+        is_draw_matched_points = False
 
     img_id = 0
     while dataset.isOk():
@@ -180,12 +186,15 @@ if __name__ == "__main__":
                     matched_points_plt.refresh()                    
 
 
-            # draw camera image 
-            cv2.imshow('Camera', vo.draw_img)				
-
-        # press 'q' to exit!
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            # ---------- Determine the using of CUI ------------
+            if config.dataset_settings['gui_on'] is True:
+                cv2.imshow('Camera', vo.draw_img)
+                			
+        # ---------- Determine the using of CUI ------------
+        if config.dataset_settings['gui_on'] is True:
+            # press 'q' to exit!
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
         img_id += 1
 
     #print('press a key in order to exit...')
@@ -196,18 +205,20 @@ if __name__ == "__main__":
     print("The results is saved in",full_path)
     # ------------------------------------------------------------------------
 
-    if is_draw_traj_img:
-        print('saving map.png')
-        fname = Path(seq_num + '.png')
-        cv2.imwrite(out_path/fname, traj_img)
-    if is_draw_3d:
-        if not kUsePangolin:
-            plt3d.quit()
-        else: 
-            viewer3D.quit()
-    if is_draw_err:
-        err_plt.quit()
-    if is_draw_matched_points is not None:
-        matched_points_plt.quit()
-                
-    cv2.destroyAllWindows()
+    # ---------- Determine the using of CUI ------------
+    if config.dataset_settings['gui_on'] is True:
+        if is_draw_traj_img:
+            print('saving map.png')
+            fname = Path(seq_num + '.png')
+            cv2.imwrite(out_path/fname, traj_img)
+        if is_draw_3d:
+            if not kUsePangolin:
+                plt3d.quit()
+            else: 
+                viewer3D.quit()
+        if is_draw_err:
+            err_plt.quit()
+        if is_draw_matched_points is not None:
+            matched_points_plt.quit()
+                    
+        cv2.destroyAllWindows()
