@@ -43,18 +43,18 @@ class Parameters(object):
     # Point visibility 
     kViewingCosLimitForPoint=0.5    # must be viewing cos < kViewingCosLimitForPoint (viewing angle must be less than 60 deg)
     kScaleConsistencyFactor=1.5
-    kMaxDistanceToleranceFactor=1.2 
+    kMaxDistanceToleranceFactor=2.0
     kMinDistanceToleranceFactor=0.8   
 
 
     # Feature management
     kSigmaLevel0 = 1.0                        # default value; can be changed by selected feature        
-    kFeatureMatchRatioTest = 0.7              
+    kFeatureMatchRatioTest = 0.99  
     #kFeatureMatchRatioTestInitializer        # ratio test used by Initializer 
     #
-    kKdtNmsRadius = 3 # pixels  #3        # radius for kd-tree based Non-Maxima Suppression
+    kKdtNmsRadius = 7 # pixels  #3        # radius for kd-tree based Non-Maxima Suppression
     #
-    kCheckFeaturesOrientation = True 
+    kCheckFeaturesOrientation = False
 
 
     # Initializer 
