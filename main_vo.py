@@ -198,7 +198,8 @@ if __name__ == "__main__":
 
     if is_draw_traj_img:
         print('saving map.png')
-        cv2.imwrite('map.png', traj_img)
+        fname = Path(seq_num + '.png')
+        cv2.imwrite(out_path/fname, traj_img)
     if is_draw_3d:
         if not kUsePangolin:
             plt3d.quit()
