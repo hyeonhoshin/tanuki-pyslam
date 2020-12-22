@@ -31,7 +31,7 @@ class VoStage(Enum):
     
 kVerbose=True     
 kMinNumFeature = 2000
-kRansacThresholdNormalized = 0.0003  # metric threshold used for normalized image coordinates 
+kRansacThresholdNormalized = 0.0004  # metric threshold used for normalized image coordinates 
 kRansacThresholdPixels = 0.1         # pixel threshold used for image coordinates 
 kAbsoluteScaleThreshold = 0.1        # absolute translation scale; it is also the minimum translation norm for an accepted motion 
 kUseEssentialMatrixEstimation = True # using the essential matrix fitting algorithm is more robust RANSAC given five-point algorithm solver 
@@ -193,9 +193,9 @@ class VisualOdometry(object):
             print('frame: ', frame_id) 
         # convert image to gray if needed    
         if img.ndim>2:
-            img = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)             
+            img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)             
         # check coherence of image size with camera settings 
-        assert(img.ndim==2 and img.shape[0]==self.cam.height and img.shape[1]==self.cam.width), "Frame: provided image has not the same size as the camera model or image is not grayscale"
+        assert(img.shape[0]==self.cam.height and img.shape[1]==self.cam.width), "Frame: provided image has not the same size as the camera model"
         self.cur_image = img
         # manage and check stage 
         if(self.stage == VoStage.GOT_FIRST_IMAGE):
@@ -209,7 +209,10 @@ class VisualOdometry(object):
   
 
     def drawFeatureTracks(self, img, reinit = False):
-        draw_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+        if img.ndim>2:
+            draw_img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+        else:
+            draw_img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
         num_outliers = 0        
         if(self.stage == VoStage.GOT_FIRST_IMAGE):            
             if reinit:
