@@ -50,11 +50,32 @@ if kUsePangolin:
     from viewer3D import Viewer3D
 
 
-
-
 if __name__ == "__main__":
 
     config = Config()
+
+    # ---------- Auto load of Camera matrix ---------- 
+    seq_num = config.dataset_settings['name']
+    if int(seq_num) <= 2:
+        config.dataset_settings['cam_settings']="settings/KITTI00-02.yaml"
+    elif int(seq_num) is 3:
+        config.dataset_settings['cam_settings']="settings/KITTI03.yaml"
+    elif int(seq_num) <= 12:
+        config.dataset_settings['cam_settings']="settings/KITTI04-12.yaml"
+    else:
+        assert True, 'There is some error in getting data'
+
+    #  ----------  Auto Selecting Color Mode  ---------- 
+    from pathlib import Path
+    base_path = config.dataset_path
+    print('Base path : ', base_path)
+    test_p = Path(base_path)/Path('sequences/'+seq_num+'/image_3')
+    if test_p.exists():
+        config.dataset_settings['is_color'] = 'True'
+    else:
+        config.dataset_settings['is_color'] = 'False'
+    config.dataset_settings['groundtruth_file'] = 'auto'
+    #  ------------------------------------------------- 
 
     dataset = dataset_factory(config.dataset_settings)
 
