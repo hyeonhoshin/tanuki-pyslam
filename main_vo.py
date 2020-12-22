@@ -41,6 +41,8 @@ from feature_tracker_configs import FeatureTrackerConfigs
 
 
 if __name__ == "__main__":
+    import time
+    start = time.time()
 
     config = Config()
 
@@ -230,3 +232,8 @@ if __name__ == "__main__":
             matched_points_plt.quit()
                     
         cv2.destroyAllWindows()
+    
+    elapsed = time.time()-start
+    mins, secs = divmod(elapsed,60)
+
+    print("Total time : {}mins {}secs".format(mins,secs))
