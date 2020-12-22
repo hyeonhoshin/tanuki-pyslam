@@ -77,6 +77,14 @@ if __name__ == "__main__":
     config.dataset_settings['groundtruth_file'] = 'auto'
     #  ------------------------------------------------- 
 
+    # ------------ Begin to create result R,t --------------
+    out_path = Path(config.dataset_settings['output_path'])
+    fname = Path(seq_num+'.txt')
+    out_path.mkdir(parents=True, exist_ok=True)
+    full_path = out_path/fname
+    f = open(full_path,'w')
+    # -------------------------------------------------------
+
     dataset = dataset_factory(config.dataset_settings)
 
     groundtruth = groundtruth_factory(config.dataset_settings)
@@ -125,7 +133,10 @@ if __name__ == "__main__":
 
         if img is not None:
 
-            vo.track(img, img_id)  # main VO function 
+            vo.track(img, img_id)  # main VO function
+            f.write("{:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f}\n".format(vo.cur_R[0,0],vo.cur_R[0,1],vo.cur_R[0,2],vo.cur_t[0,0],
+														   vo.cur_R[1,0],vo.cur_R[1,1],vo.cur_R[1,2],vo.cur_t[1,0],
+														   vo.cur_R[2,0],vo.cur_R[2,1],vo.cur_R[2,2],vo.cur_t[2,0]))
 
             if(img_id > 2):	       # start drawing from the third image (when everything is initialized and flows in a normal way)
 
@@ -179,6 +190,11 @@ if __name__ == "__main__":
 
     #print('press a key in order to exit...')
     #cv2.waitKey(0)
+
+    # ------------------- Output save and close connection -------------------
+    f.close()
+    print("The results is saved in",full_path)
+    # ------------------------------------------------------------------------
 
     if is_draw_traj_img:
         print('saving map.png')
