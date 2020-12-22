@@ -190,5 +190,10 @@ class FeatureTrackerConfigs(object):
                        descriptor_type = FeatureDescriptorTypes.CONTEXTDESC, 
                        match_ratio_test = kRatioTest,
                        tracker_type = kTrackerType)
-    
+
+    LFNET = dict(num_features=kNumFeatures,                          
+                      detector_type = FeatureDetectorTypes.LFNET, 
+                      descriptor_type = FeatureDescriptorTypes.LFNET, 
+                      match_ratio_test = kRatioTest,                               
+                      tracker_type = kTrackerType)
     
