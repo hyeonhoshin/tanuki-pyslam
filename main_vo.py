@@ -44,10 +44,6 @@ if __name__ == "__main__":
 
     config = Config()
 
-    # ---------- Determine the using of CUI ------------
-    if config.dataset_settings['gui_on'] is True:
-        from viewer3D import Viewer3D
-
     # ---------- Auto load of Camera matrix ---------- 
     seq_num = config.dataset_settings['name']
     if int(seq_num) <= 2:
@@ -79,6 +75,18 @@ if __name__ == "__main__":
     f = open(full_path,'w')
     # -------------------------------------------------------
 
+    # ------------------ gui on? ------------------
+    gui_on = False
+    print(config.dataset_settings['gui_on'])
+    if config.dataset_settings['gui_on'] == 'True':
+        gui_on = True
+    # --------------------------------------------
+
+    # ---------- Determine the using of CUI ------------
+    if gui_on is True:
+        from viewer3D import Viewer3D
+    # --------------------------------------------------
+
     dataset = dataset_factory(config.dataset_settings)
 
     groundtruth = groundtruth_factory(config.dataset_settings)
@@ -103,7 +111,7 @@ if __name__ == "__main__":
     vo = VisualOdometry(cam, groundtruth, feature_tracker)
 
     # ---------- Determine the using of CUI ------------
-    if config.dataset_settings['gui_on'] is True:
+    if gui_on is True:
         is_draw_traj_img = True
     else:
         is_draw_traj_img = False
@@ -113,7 +121,7 @@ if __name__ == "__main__":
     draw_scale = 1
 
     # ---------- Determine the using of CUI ------------
-    if config.dataset_settings['gui_on'] is True:
+    if gui_on is True:
         is_draw_3d = True
         kUsePangolin = True
         if kUsePangolin:
@@ -187,11 +195,11 @@ if __name__ == "__main__":
 
 
             # ---------- Determine the using of CUI ------------
-            if config.dataset_settings['gui_on'] is True:
+            if gui_on is True:
                 cv2.imshow('Camera', vo.draw_img)
                 			
         # ---------- Determine the using of CUI ------------
-        if config.dataset_settings['gui_on'] is True:
+        if gui_on is True:
             # press 'q' to exit!
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -206,7 +214,7 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------
 
     # ---------- Determine the using of CUI ------------
-    if config.dataset_settings['gui_on'] is True:
+    if gui_on is True:
         if is_draw_traj_img:
             print('saving map.png')
             fname = Path(seq_num + '.png')
